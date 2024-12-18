@@ -32,8 +32,8 @@ const Login = ({ onLogin }) => {
         headers: {
           'Content-Type': 'application/json',
           'App-Authorizer': '647061697361',
-            'Accept': 'application/json', 
-            'Origin': 'https://silk.billin.space'
+          'Accept': 'application/json', 
+          'Origin': 'https://silk.billin.space'
         },
         body: JSON.stringify({
           mobile_no: emailOrPhone,
@@ -61,62 +61,109 @@ const Login = ({ onLogin }) => {
 
   return (
     <div style={styles.container}>
-      <h1>Login</h1>
-      {error && <p style={styles.error}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="text"
-            placeholder="Email or Phone"
-            value={emailOrPhone}
-            onChange={(e) => setEmailOrPhone(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-          />
-        </div>
-        <button type="submit" style={styles.button}>
-          Login
-        </button>
-      </form>
+      <div style={styles.loginForm}>
+        <h2 style={styles.title}>Login</h2>
+        {error && <p style={styles.error}>{error}</p>}
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.inputContainer}>
+            <input
+              type="text"
+              placeholder="Email or Phone"
+              value={emailOrPhone}
+              onChange={(e) => setEmailOrPhone(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.inputContainer}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.buttonContainer}>
+            <button type="submit" style={styles.button}>
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
 const styles = {
   container: {
-    width: '300px',
-    margin: '0 auto',
-    padding: '20px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#000',  // Black background
+    color: '#fff',  // White text
+    fontFamily: 'Arial, sans-serif',
+  },
+  loginForm: {
+    backgroundColor: '#222', // Dark form background
+    padding: '30px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+    textAlign: 'center',
+    width: '100%',
+    maxWidth: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    boxSizing: 'border-box', // Ensure padding is included in width calculation
+  },
+  title: {
+    fontSize: '28px',
+    marginBottom: '20px',
+    color: '#fff',
+    fontWeight: '600',  // Make the title bold
+  },
+  form: {
+    width: '100%',
+  },
+  inputContainer: {
+    display: 'flex',
+    marginBottom: '15px',
+    width: '100%',
   },
   input: {
     width: '100%',
-    padding: '8px',
-    margin: '10px 0',
-    border: '1px solid #ccc',
+    padding: '10px',
+    border: '1px solid #444',
     borderRadius: '4px',
+    backgroundColor: '#333',  // Dark input background
+    color: '#fff',  // White text in the input field
+    fontSize: '16px',
+    textAlign: 'center',  // Center the input text
+  },
+  buttonContainer: {
+    width: '100%',
   },
   button: {
     width: '100%',
-    padding: '10px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    padding: '12px',
     border: 'none',
+    backgroundColor: '#007bff', // Button color
+    color: '#fff',  // White text
+    fontSize: '18px',
     borderRadius: '4px',
     cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    marginTop: '10px',
+  },
+  buttonHover: {
+    backgroundColor: '#0056b3',
   },
   error: {
-    color: 'red',
+    color: '#ff4d4d',
+    marginBottom: '15px',
     fontSize: '14px',
+    textAlign: 'center',
   },
 };
 

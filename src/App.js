@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
+import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
 const App = () => {
-  const [token, setToken] = useState('mock_token');  // Set a mock token directly
+  const [token, setToken] = useState(null);
+
+  const handleLogin = (token) => {
+    setToken(token);
+  };
 
   return (
     <div>
-      {token ? (
-        <Dashboard token={token} />
+      {!token ? (
+        <Login onLogin={handleLogin} />
       ) : (
-        <h1>Login Page (Bypass)</h1>  // You can customize this to show the login if needed
+        <Dashboard token={token} />
       )}
     </div>
   );

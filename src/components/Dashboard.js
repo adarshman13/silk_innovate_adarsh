@@ -31,16 +31,19 @@ const Dashboard = ({ token }) => {
     <div style={styles.container}>
       <h1>Welcome to the Dashboard</h1>
       {user ? (
-        <div>
+        <div style={styles.userInfo}>
           <img src={user.avatar} alt="User Avatar" style={styles.avatar} />
-          <p>Name: {user.name}</p>
-          <p>Email: {user.email}</p>
-          <p>Phone: {user.mobile_no}</p>
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Phone:</strong> {user.mobile_no}</p>
         </div>
       ) : (
         <p>Loading user data...</p>
       )}
-      <MemoryGame /> {/* Add the memory game to the dashboard */}
+      <div style={styles.gameSection}>
+        <h2>Memory Game</h2>
+        <MemoryGame /> {/* Add the memory game to the dashboard */}
+      </div>
     </div>
   );
 };
@@ -49,11 +52,21 @@ const styles = {
   container: {
     padding: '20px',
     textAlign: 'center',
+    backgroundColor: '#000',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
+  },
+  userInfo: {
+    marginBottom: '20px',
   },
   avatar: {
     width: '100px',
     height: '100px',
     borderRadius: '50%',
+    marginBottom: '10px',
+  },
+  gameSection: {
+    marginTop: '30px',
   },
 };
 

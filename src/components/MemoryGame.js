@@ -46,15 +46,30 @@ const MemoryGame = () => {
 
   return (
     <div style={styles.gameContainer}>
-      <h2>Memory Game</h2>
+      <h2 style={styles.title}>Memory Game</h2>
       <div style={styles.grid}>
         {cards.map((card, index) => (
           <div
             key={index}
-            style={styles.card}
+            style={styles.cardContainer}
             onClick={() => handleCardClick(index)}
           >
-            {isFlipped(index) ? card : "?"}
+            <div
+              style={{
+                ...styles.card,
+                transform: isFlipped(index) ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              }}
+            >
+              {/* Front of the card - Shows the question mark */}
+              <div style={styles.cardFront}>
+                {"?"}
+              </div>
+
+              {/* Back of the card - Shows the number */}
+              <div style={styles.cardBack}>
+                {card}
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -66,24 +81,59 @@ const styles = {
   gameContainer: {
     textAlign: 'center',
     padding: '20px',
+    backgroundColor: '#000',  // Black background for the dashboard theme
+    color: '#fff',  // White text for visibility
+  },
+  title: {
+    fontSize: '24px',
+    marginBottom: '20px',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 100px)',
     gap: '10px',
     justifyContent: 'center',
+    marginTop: '20px',
+  },
+  cardContainer: {
+    perspective: '1000px', // To give the 3D effect to the card flip
   },
   card: {
     width: '100px',
     height: '100px',
+    position: 'relative',
+    transformStyle: 'preserve-3d',
+    transition: 'transform 0.6s',
+  },
+  cardFront: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff', // White front with a question mark
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
-    fontSize: '20px',
-    cursor: 'pointer',
+    fontSize: '24px', // Increased font size for better visibility
+    fontWeight: 'bold',
+    color: '#000', // Black color for visible text
     borderRadius: '4px',
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    backfaceVisibility: 'hidden', // Ensures front is hidden when flipped
+  },
+  cardBack: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#333', // Dark background color for the back of the card
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#fff', // White text for the number
+    transform: 'rotateY(180deg)',
+    borderRadius: '4px',
+    backfaceVisibility: 'hidden', // Ensures back is hidden when flipped
   },
 };
 

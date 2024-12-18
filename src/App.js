@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import Login from './components/Login.js';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
   const [token, setToken] = useState(null);
 
+  const handleLogin = (token) => {
+    setToken(token);
+  };
+
   return (
     <div>
       {!token ? (
-        <Login onLogin={(token) => setToken(token)} />
+        <Login onLogin={handleLogin} />
       ) : (
-        <h1>Welcome to the Dashboard</h1>
+        <Dashboard token={token} />
       )}
     </div>
   );

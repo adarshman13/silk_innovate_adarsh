@@ -1,70 +1,190 @@
-# Getting Started with Create React App
+Since the Login is not working properly, here's the login.js code with the login bypass:
+import React, { useState } from 'react';
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+const Login = ({ onLogin }) => {
+  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [bypass, setBypass] = useState(false); // State to handle bypass logic
 
-## Available Scripts
+  const validateInput = () => {
+    const phoneRegex = /^(980|981|982|984|985|986)\d{7}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-In the project directory, you can run:
+    if (!phoneRegex.test(emailOrPhone) && !emailRegex.test(emailOrPhone)) {
+      setError('Enter a valid email or Nepali phone number');
+      return false;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return false;
+    }
+    setError('');
+    return true;
+  };
 
-### `npm start`
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    if (!validateInput()) return;
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    // If bypass is true, directly call the onLogin function without API request
+    if (bypass) {
+      const dummyToken = 'dummyAccessTokenForTesting'; // Dummy access token for bypass
+      onLogin(dummyToken); // Directly call onLogin with the bypass token
+      return;
+    }
 
-### `npm test`
+    // Proceed with the actual login request
+    try {
+      const response = await fetch('https://api.billin.space/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'App-Authorizer': '647061697361',
+          'Accept': 'application/json',
+          'Origin': 'https://silk.billin.space',
+        },
+        body: JSON.stringify({
+          mobile_no: emailOrPhone,
+          password,
+          fcm_token: 'no_fcm',
+        }),
+      });
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+      const result = await response.json();
 
-### `npm run build`
+      if (response.ok) {
+        onLogin(result.access_token); // Call onLogin with the actual token
+      } else {
+        setError(result.message || 'Login failed. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+      console.error('Error:', err);
+    }
+  };
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  return (
+    <div style={styles.container}>
+      <div style={styles.loginForm}>
+        <h2 style={styles.title}>Login</h2>
+        {error && <p style={styles.error}>{error}</p>}
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.inputContainer}>
+            <input
+              type="text"
+              placeholder="Email or Phone"
+              value={emailOrPhone}
+              onChange={(e) => setEmailOrPhone(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.inputContainer}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.buttonContainer}>
+            <button type="submit" style={styles.button}>
+              Login
+            </button>
+          </div>
+        </form>
+        {/* Bypass Login Button */}
+        <button
+          onClick={() => setBypass(!bypass)}
+          style={styles.bypassButton}
+        >
+          {bypass ? 'Disable Bypass' : 'Enable Bypass'}
+        </button>
+      </div>
+    </div>
+  );
+};
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+const styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#000',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
+  },
+  loginForm: {
+    backgroundColor: '#222',
+    padding: '30px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+    textAlign: 'center',
+    width: '100%',
+    maxWidth: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+  },
+  title: {
+    fontSize: '28px',
+    marginBottom: '20px',
+    color: '#fff',
+    fontWeight: '600',
+  },
+  form: {
+    width: '100%',
+  },
+  inputContainer: {
+    marginBottom: '15px',
+    width: '100%',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    border: '1px solid #444',
+    borderRadius: '4px',
+    backgroundColor: '#333',
+    color: '#fff',
+    fontSize: '16px',
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    width: '100%',
+  },
+  button: {
+    width: '100%',
+    padding: '12px',
+    border: 'none',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    fontSize: '18px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+    marginTop: '10px',
+  },
+  bypassButton: {
+    marginTop: '15px',
+    padding: '10px',
+    backgroundColor: '#ffcc00',
+    color: '#000',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    transition: 'background-color 0.3s',
+  },
+  error: {
+    color: '#ff4d4d',
+    marginBottom: '15px',
+    fontSize: '14px',
+    textAlign: 'center',
+  },
+};
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default Login;
